@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/../includes/bootstrap.php';
+admin_logout();
+redirect(BASE_URL . '/index.php');

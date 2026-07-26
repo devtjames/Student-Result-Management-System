@@ -1,0 +1,36 @@
+# SRMS — Apache configuration
+
+Options -Indexes
+
+# ── Protect sensitive directories ──────────────────────────────────────────────
+<FilesMatch "\.(sql|json|md|lock|env)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block direct access to uploads temp folder
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block access to /uploads/temp/
+    RewriteRule ^uploads/temp/ - [F,L]
+
+    # Block access to /includes/ directly
+    RewriteRule ^includes/ - [F,L]
+
+    # Block access to /vendor/
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>
+
+# ── Security headers ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ── Compression ───────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
